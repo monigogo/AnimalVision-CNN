@@ -1,0 +1,46 @@
+
+{    //NOMMBRE DEL CONTENEDOR
+	"name": "NDVIA Tensorflow",
+	//IMAGEN PREDEFINIDA DE NVDIA PARA TENSORFLOW RECUERDA INSTALAR DE ACUERDO A TU GPU
+	"image": "nvcr.io/nvidia/tensorflow:25.02-tf2-py3",
+	//CONFIGURACION QUE SE EJECUTA AL INICIAR EL CONTENEDOR 
+	"runArgs": [
+		"--gpus=all", //TE DICE USA TODAS LAS GPU DISPONIBLES
+		"--shm-size=1g" //SHM ES MEMORIA COMPARTIDA, Y LE DICE DALE 1GB DE MEMORIA COMPARTIDA
+	],
+
+	//CONECTA LA CARPETA LOCAL AL CONTENEDOR TODOS TUS CAMBIOS SON EN TIEMPO REAL
+	"mounts": ["source=${localWorkspaceFolder},target=/workspace,type=bind,consistency=cached"],
+	//${localWorkspaceFolder} = Usa la carpeta de mi proyecto en mi PC
+	//target=Conéctala a /workspace dentro del contenedor
+	//type=bind= los cambios se reflejan en ambos en tiempo real
+	//consistency=cached = Prioriza velocidad antes que sincronización perfecta
+	
+	//trabaja en este lugar 
+	"workspaceFolder": "/workspace",
+
+	//s un comando que se ejecuta UNA SOLA VEZ, justo después de crear el contenedor
+	"postCreateCommand": "apt-get update && apt-get install -y python3-tk libgl1 libglib2.0-0t64 && pip install --root-user-action=ignore -r .devcontainer/requirements.txt",
+    // python3-tk = Para matplotlib con GUI
+    // libgl1-mesa-glx = Para OpenCV
+    // libglib2.0-0 = También para OpenCV
+    // pip install -r requirements.txt = Instala todas tus dependencias
+
+	//Cuando VS Code se conecte al contenedor, haz estas personalizaciones
+	"customizations": {
+		"vscode": {
+			"extensions": [
+				"ms-python.python",
+				"ms-toolsai.jupyter",
+				"github.copilot"
+			]
+		}
+	},
+
+	"forwardPorts": [6006], // Puerto por defecto de TensorBoard
+	
+	"containerEnv": {
+        "TF_CPP_MIN_LOG_LEVEL": "2",  // Reduce logs verbosos de TensorFlow
+        "PYTHONUNBUFFERED": "1"       // Ver prints en tiempo real
+    }
+}

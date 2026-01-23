@@ -1,0 +1,94 @@
+# ============================================
+# PYTHON
+# ============================================
+__pycache__/
+*.py[cod]
+*$py.class
+*.pyc
+*.pyo
+*.so
+.Python
+
+# ============================================
+# VIRTUAL ENVIRONMENTS
+# ============================================
+env/
+venv/
+ENV/
+*.egg-info/
+
+# ============================================
+# IDEs y EDITORES
+# ============================================
+.vscode/
+.idea/
+*.swp
+*.vs/
+
+# ============================================
+# SISTEMA OPERATIVO
+# ============================================
+
+# Windows
+Thumbs.db
+ehthumbs.db
+Desktop.ini
+$RECYCLE.BIN/
+
+# Linux
+*~
+
+# ============================================
+# MODELOS ENTRENADOS (archivos grandes)
+# ============================================
+models/*.keras
+models/*.h5
+models/*.pb
+!models/mejor_model.keras
+
+# ============================================
+# LOGS y TENSORBOARD
+# ============================================
+logs/
+*.log
+events.out.tfevents.*
+
+# ============================================
+# IMÁGENES GENERADAS
+# ============================================
+# Permite las del dataset pero bloquea las generadas
+*.png
+*.jpg
+*.jpeg
+!dataset/**/*.jpg
+!dataset/**/*.jpeg
+!dataset/**/*.png
+!README_images/*.png
+
+# ============================================
+# ARCHIVOS TEMPORALES
+# ============================================
+*.tmp
+*.temp
+.cache/
+*.bak
+.DS_Store
+
+# ============================================
+# CONFIGURACIÓN LOCAL
+# ============================================
+.env
+
+
+# ============================================
+# DATASET (opcional)
+# ============================================
+# Descomenta si NO quieres subir el dataset (ocupa mucho espacio)
+# dataset/
+
+# Si el dataset es pequeño (<50MB), déjalo comentado para subirlo
+# Si es grande (>50MB), descoméntalo
+```
+
+---
+
