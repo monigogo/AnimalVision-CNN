@@ -44,7 +44,7 @@ $RECYCLE.BIN/
 models/*.keras
 models/*.h5
 models/*.pb
-!models/mejor_model.keras
+
 
 # ============================================
 # LOGS y TENSORBOARD
@@ -84,7 +84,7 @@ events.out.tfevents.*
 # DATASET (opcional)
 # ============================================
 # Descomenta si NO quieres subir el dataset (ocupa mucho espacio)
-# dataset/
+dataset/
 
 # Si el dataset es pequeño (<50MB), déjalo comentado para subirlo
 # Si es grande (>50MB), descoméntalo

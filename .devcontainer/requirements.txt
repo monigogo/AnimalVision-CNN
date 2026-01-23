@@ -1,1 +1,2 @@
 matplotlib>=3.8.0
+tensorflowjs==4.22.0

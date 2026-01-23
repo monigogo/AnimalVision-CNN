@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>🐱🐶 Detector de Mascotas</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>🐱🐶 Detector de Mascotas</h1>
+            <p>Clasificación en tiempo real con IA</p>
+        </header>
+
+        <main>
+            <!-- Video de la cámara -->
+            <div class="video-container">
+                <video id="webcam" autoplay playsinline></video>
+                <canvas id="canvas"></canvas>
+            </div>
+
+            <!-- Resultado -->
+            <div class="result-box" id="result">
+                <div class="emoji" id="emoji">📷</div>
+                <h2 id="prediction">Presiona "Iniciar Cámara"</h2>
+                <div class="confidence" id="confidence"></div>
+            </div>
+
+            <!-- Controles -->
+            <div class="controls">
+                <button id="startBtn" class="btn btn-primary">📹 Iniciar Cámara</button>
+                <button id="stopBtn" class="btn btn-secondary" disabled>⏹️ Detener</button>
+            </div>
+
+            <!-- Indicador de carga -->
+            <div class="loading" id="loading">
+                <div class="spinner"></div>
+                <p>Cargando modelo...</p>
+            </div>
+        </main>
+
+        <footer>
+            <p>CNN desarrollada con TensorFlow</p>
+        </footer>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/@tensorflow/tfjs@4.11.0"></script>
+    <script src="app.js"></script>
+</body>
+</html>

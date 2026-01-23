@@ -20,7 +20,7 @@
 	"workspaceFolder": "/workspace",
 
 	//s un comando que se ejecuta UNA SOLA VEZ, justo después de crear el contenedor
-	"postCreateCommand": "apt-get update && apt-get install -y python3-tk libgl1 libglib2.0-0t64 && pip install --root-user-action=ignore -r .devcontainer/requirements.txt",
+	"postCreateCommand": "apt-get update && apt-get install -y --no-install-recommends python3-tk libgl1 libglib2.0-0&& apt-get clean && rm -rf /var/lib/apt/lists/ && pip install --no-cache-dir --root-user-action=ignore -r .devcontainer/requirements.txt",
     // python3-tk = Para matplotlib con GUI
     // libgl1-mesa-glx = Para OpenCV
     // libglib2.0-0 = También para OpenCV
