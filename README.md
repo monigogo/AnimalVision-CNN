@@ -1,3 +1,6 @@
+<p align="center">
+  <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGFlMnpxZGdtMnBtN3huZnByZnJ2N3F3aHlvMzRvZDIxOXp5bmo4cSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Dx0EMMSpUSwG2umEOO/giphy.gif" alt="AnimalVision Demo" width="500">
+</p>
 # CNN Image Classification with TensorFlow & NVIDIA GPU
 
 Proyecto de clasificación de imágenes usando Redes Neuronales Convolucionales (CNN) con TensorFlow, optimizado para GPU NVIDIA mediante contenedores Docker.
