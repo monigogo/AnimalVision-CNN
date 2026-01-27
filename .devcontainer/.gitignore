@@ -52,6 +52,8 @@ models/*.pb
 logs/
 *.log
 events.out.tfevents.*
+train.py
+test_model.py
 
 # ============================================
 # IMÁGENES GENERADAS

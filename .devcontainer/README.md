@@ -1,19 +1,23 @@
-# CNN Image Classification with TensorFlow & NVIDIA GPU
+# 🐶🐱 Detector de Mascotas - CNN con TensorFlow y Web
 
-Proyecto de clasificación de imágenes usando Redes Neuronales Convolucionales (CNN) con TensorFlow, optimizado para GPU NVIDIA mediante contenedores Docker.
+Aplicación completa para detectar si una imagen contiene un **perro o un gato** usando Deep Learning. Incluye backend con modelo entrenado en Python/TensorFlow y frontend web interactivo con TensorFlow.js.
 
 ## 📋 Descripción
 
-Este proyecto implementa un clasificador de imágenes de animales (perros y gatos) utilizando deep learning. Está configurado para ejecutarse en un entorno de desarrollo en contenedor con soporte completo para GPU NVIDIA.
+Este proyecto implementa un clasificador de imágenes (perros y gatos) con:
+- **Backend**: Red Neuronal Convolucional (CNN) entrenada con TensorFlow optimizada para GPU NVIDIA
+- **Frontend**: Aplicación web interactiva con detección en tiempo real desde cámara o carga de imágenes
 
-## 🚀 Características
+## ✨ Características
 
-- ✅ Entrenamiento con GPU NVIDIA (CUDA)
-- ✅ Desarrollo en contenedor Docker aislado
-- ✅ TensorBoard para visualización de métricas
-- ✅ Checkpoint automático del mejor modelo
-- ✅ Validación cruzada
-- ✅ Visualización de resultados con Matplotlib
+- ✅ **Detección en tiempo real** desde webcam del navegador
+- ✅ **Carga de imágenes** desde dispositivo y predicción instantánea
+- ✅ **Interfaz amigable** con emojis y porcentaje de confianza
+- ✅ **Entrenamiento con GPU** NVIDIA (CUDA) optimizado para GTX 1650
+- ✅ **Mixed Precision** (float16) para reducir uso de memoria
+- ✅ **TensorFlow.js** para inferencia en el navegador sin backend
+- ✅ **Modelo convertido** a formato web (.json + .bin)
+- ✅ **TensorBoard** para visualización de métricas de entrenamiento
 
 ## 🛠️ Requisitos Previos
 
@@ -27,20 +31,41 @@ Este proyecto implementa un clasificador de imágenes de animales (perros y gato
 ## 📂 Estructura del Proyecto
 
 ```
-CNN/
-├── .devcontainer/
-│   ├── devcontainer.json       # Configuración del contenedor
-│   ├── requirements.txt        # Dependencias Python
-│   └── src/
-│       ├── train.py           # Script de entrenamiento
-│       └── modelCNN.py        # Arquitectura del modelo
-├── dataset/
-│   └── animals/
-│       ├── cat/               # Imágenes de gatos
-│       └── dog/               # Imágenes de perros
-├── models/                    # Modelos guardados (generado)
-├── logs/                      # Logs de TensorBoard (generado)
-└── README.md
+.devcontainer/
+├── README.md
+├── requirements.txt
+├── devcontainer.json
+│
+├── backend/
+│   ├── dockerfile
+│   ├── requirements.txt
+│   ├── app/
+│   │   ├── main.py
+│   │   └── models/
+│   │       ├── modelCNN.py        # Arquitectura del modelo
+│   │       ├── train.py           # Script de entrenamiento
+│   │       └── test_model.py      # Pruebas del modelo
+│   ├── dataset/
+│   │   └── animals/
+│   │       ├── cats/ (1000+ imágenes)
+│   │       └── dogs/ (1000+ imágenes)
+│   ├── models/
+│   │   ├── mejor_modelo.keras
+│   │   ├── modelo_final.keras
+│   │   └── predicciones_test.png
+│   └── logs/
+│       └── fit/ (TensorBoard logs)
+│
+└── frontend/
+    ├── index.html
+    ├── src/
+    │   ├── app.js               # Lógica de detección TensorFlow.js
+    │   ├── style.css            # Estilos de la aplicación
+    │   └── model/
+    │       ├── model.json       # Modelo convertido
+    │       ├── group1-shard*.bin # Pesos del modelo
+    │       ├── mejor_modelo.keras
+    │       └── modelo_final.keras
 ```
 
 ## 🔧 Instalación y Configuración
@@ -119,77 +144,146 @@ Parámetros configurables en `train.py`:
 - `epochs`: Número de épocas de entrenamiento (default: 10)
 - `validation_split`: Porcentaje de datos para validación (default: 0.2)
 
-## 🐳 Configuración del Contenedor
-
-El archivo `.devcontainer/devcontainer.json` incluye:
-
-- **Imagen base**: `nvcr.io/nvidia/tensorflow:25.02-tf2-py3`
-- **GPU**: Acceso completo a todas las GPUs disponibles
-- **Memoria compartida**: 1GB
-- **Puertos**: 6006 (TensorBoard)
-- **Variables de entorno**:
-  - `TF_CPP_MIN_LOG_LEVEL=2`: Reduce logs verbosos
-  - `PYTHONUNBUFFERED=1`: Logs en tiempo real
-
-## 📦 Dependencias
-
-Listadas en `.devcontainer/requirements.txt`:
-
-```txt
-matplotlib>=3.8.0
-```
-
-Las siguientes dependencias vienen preinstaladas en la imagen de TensorFlow:
-- tensorflow>=2.15.0
-- numpy>=1.24.0
-- pillow>=10.0.0
-
-## 📈 Resultados
-
-Después del entrenamiento, encontrarás:
-
-- **Modelos guardados**: 
-  - `models/mejor_modelo.keras` (mejor modelo según val_accuracy)
-  - `models/modelo_final.keras` (último modelo)
-- **Gráficas**: `models/training_history.png`
-- **Logs de TensorBoard**: `logs/fit/`
-
-## 🔍 Solución de Problemas
-
-### GPU no detectada
-
-```bash
-# Verificar que TensorFlow detecta la GPU
-python -c "import tensorflow as tf; print('GPUs:', tf.config.list_physical_devices('GPU'))"
-```
-
-### Errores de memoria
-
-Reduce el `batch_size` en `train.py`:
+## 🏗️ Arquitectura del Modelo CNN
 
 ```python
-batch_size=16  # o menos
+Sequential([
+    Rescaling(1./255, input_shape=(128, 128, 3)),
+    Conv2D(32, (3,3), activation='relu'),
+    MaxPooling2D(2,2),
+    Conv2D(64, (3,3), activation='relu'),
+    MaxPooling2D(2,2),
+    Conv2D(128, (3,3), activation='relu'),
+    MaxPooling2D(2,2),
+    Dropout(0.5),
+    Flatten(),
+    Dense(128, activation='relu'),
+    Dense(1, activation='sigmoid')  # Salida: 0=Gato, 1=Perro
+])
 ```
 
-### Warnings de NUMA/PTX
+## 📊 Especificaciones
 
-Son normales y no afectan el entrenamiento. Para reducirlos, agrega al inicio de `train.py`:
+- **Input**: Imágenes 128x128 RGB
+- **Output**: Probabilidad de ser perro (0.0-1.0)
+- **Epochs**: 10 (optimizado para GTX 1650)
+- **Batch Size**: 8 (bajo uso de memoria)
+- **Optimizer**: Adam
+- **Loss**: Binary Crossentropy
+- **Métrica**: Accuracy
 
-```python
-import os
-os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3'
+## 🔧 Requisitos
+
+### Hardware
+- GPU NVIDIA compatible con CUDA (probado en GTX 1650)
+- Mínimo 4GB VRAM
+
+### Software
+- Python 3.12+
+- TensorFlow 2.x
+- TensorFlow.js (en navegador)
+
+### Dependencias Python
+
+Ver `requirements.txt`:
+```
+tensorflow-gpu==2.x.x
+tensorflow-io==0.x.x
+numpy
+matplotlib
+tensorflowjs
 ```
 
-### Error: Package 'libgl1-mesa-glx' has no installation candidate
+## 📝 Uso de la Aplicación
 
-Este error ya está corregido en `devcontainer.json`. El paquete correcto para Ubuntu 24.04 es `libgl1`.
+### Opción 1: Cámara en Tiempo Real
+```
+1. Haz clic en "📹 Iniciar Cámara"
+2. Apunta a un perro o gato
+3. Verás la predicción en tiempo real con emoji y confianza
+```
 
-## 🎓 Recursos de Aprendizaje
+### Opción 2: Cargar Imagen
+```
+1. Haz clic en "📁 Cargar Imagen"
+2. Selecciona una imagen de tu dispositivo
+3. La imagen se mostrará con la predicción al instante
+```
 
-- [Documentación de TensorFlow](https://www.tensorflow.org/tutorials)
-- [Guía de Dev Containers](https://code.visualstudio.com/docs/devcontainers/containers)
-- [NVIDIA Container Toolkit](https://docs.nvidia.com/datacenter/cloud-native/container-toolkit/latest/install-guide.html)
-- [Dataset en Kaggle](https://www.kaggle.com/datasets/anthonytherrien/dog-vs-cat)
+## 🔄 Flujo del Proyecto
+
+```
+Dataset (2000+ imágenes)
+    ↓
+[Backend - Python/TensorFlow]
+    ↓
+Entrenar CNN
+    ↓
+Modelo .keras
+    ↓
+Convertir a TensorFlow.js
+    ↓
+[Frontend - HTML/CSS/JavaScript]
+    ↓
+Detección en navegador
+```
+
+## 🎯 Resultados Esperados
+
+- **Perro**: 🐶 Es un Perro (confianza ≥60%)
+- **Gato**: 🐱 Es un Gato (confianza ≤40%)
+- **Indeciso**: ❓ No puedo decir qué es
+
+## 🐛 Troubleshooting
+
+### Problema: "Error al cargar el modelo"
+- **Solución**: Asegúrate de que:
+  - El servidor HTTP está corriendo: `python3 -m http.server 8080`
+  - La carpeta `frontend/src/model/` contiene `model.json` y `*.bin`
+  - Ejecutaste `convert_model.py` exitosamente
+
+### � Licencia
+
+Este proyecto está bajo licencia MIT - ver `LICENSE` para más detalles.
+
+## 🤝 Contribuciones
+
+Las contribuciones son bienvenidas. Por favor:
+1. Fork el repositorio
+2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
+3. Haz commit con mensajes descriptivos (`git commit -m 'Add some AmazingFeature'`)
+4. Push a la rama (`git push origin feature/AmazingFeature`)
+5. Abre un Pull Request
+
+## 👤 Autor
+
+Desarrollado como proyecto de Deep Learning con TensorFlow.
+
+## 🌟 Agradecimientos
+
+- TensorFlow/Keras - Framework de Deep Learning
+- TensorFlow.js - Inferencia en navegador
+- Dataset de gatos y perros
+
+---
+
+**¡Hecho con ❤️ usando Python, TensorFlow y JavaScript!**detector-perros-gatos
+
+# Entrenar modelo (Backend)
+cd backend/app/models
+python train.py
+
+# Convertir a TensorFlow.js
+python ../../convert_model.py
+
+# Levantar frontend
+cd ../../..
+cd frontend
+python3 -m http.server 8080
+
+# Abrir navegador
+# http://localhost:8080
+```
 
 
 ## 📝 Licencia
