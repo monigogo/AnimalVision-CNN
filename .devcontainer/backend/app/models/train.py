@@ -15,10 +15,10 @@ def entrenar():
     train_ds = tf.keras.utils.image_dataset_from_directory(
         data_dir,
         image_size=(128, 128),
-        batch_size=64,   # 🔥 Batch size optimizado para GPU
-        validation_split=0.2,
+        batch_size=64,   # 🔥 indica que el modelo no procesa las imágenes una por una, sino en grupos de 64.
+        validation_split=0.2, # 20% para validación
         subset="training",
-        seed=123
+        seed=123 # mezclar siempre igual
     )
 
     val_ds = tf.keras.utils.image_dataset_from_directory(
@@ -35,7 +35,13 @@ def entrenar():
     print(f"Clases detectadas: {class_names}")
     num_classes = len(class_names)
 
+    # 🔹 Optimizar rendimiento dataset 
     AUTOTUNE = tf.data.AUTOTUNE
+    #AUTOTUNE:decide por sí solo cuánta memoria usar para ir a la máxima velocidad
+    #.cache(): Es el almacén rápido.
+    #shuffle: Es barajar las cartas.
+    #prefetch(): Mientras la GPU entrena con un grupo de fotos,
+    #  el CPU ya está preparando el siguiente. 
 
     train_ds = train_ds.cache().shuffle(1000).prefetch(AUTOTUNE)
     val_ds = val_ds.cache().prefetch(AUTOTUNE)
@@ -69,13 +75,13 @@ def entrenar():
             monitor='val_accuracy',
             mode='max'
         ),
-
+#detiene el entrenamiento si el modelo deja de mejorar para evitar el sobreajuste;
         EarlyStopping(
             monitor='val_loss',
             patience=6,
             restore_best_weights=True
         ),
-
+#reduce la velocidad de aprendizaje cuando el progreso se estanca
         ReduceLROnPlateau(
             monitor='val_loss',
             factor=0.3,

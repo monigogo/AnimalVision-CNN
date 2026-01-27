@@ -15,7 +15,6 @@ Este proyecto implementa un clasificador de imágenes (perros y gatos) con:
 - ✅ **Interfaz amigable** con emojis y porcentaje de confianza
 - ✅ **Entrenamiento con GPU** NVIDIA (CUDA) optimizado para GTX 1650
 - ✅ **Mixed Precision** (float16) para reducir uso de memoria
-- ✅ **TensorFlow.js** para inferencia en el navegador sin backend
 - ✅ **Modelo convertido** a formato web (.json + .bin)
 - ✅ **TensorBoard** para visualización de métricas de entrenamiento
 
@@ -28,68 +27,29 @@ Este proyecto implementa un clasificador de imágenes (perros y gatos) con:
 ├── requirements.txt
 ├── devcontainer.json
 │
-├── src/
-│   ├── train.py                # Script de entrenamiento
-│   ├── modelCNN.py             # Arquitectura del modelo
-│   ├── convert_model.py        # Convertir modelo a TensorFlow.js
-│   ├── convert_to_tfjs.py      # Convertir modelo alternativo
-│   └── model/                  # Modelos guardados
-│       ├── model.json
-│       ├── group1-shard1of4.bin
-│       ├── group1-shard2of4.bin
-│       ├── group1-shard3of4.bin
-│       ├── group1-shard4of4.bin
-│       ├── mejor_modelo.keras
-│       ├── modelo_final.keras
-│       └── training_history.png
+├── backend/
+│   ├── app/
+│   │   ├── main.py
+│   │   └── models/
+│   │       ├── modelCNN.py        # Arquitectura del modelo CNN
+│   │       ├── train.py           # Script de entrenamiento
+│   │       └── test_model.py      # Pruebas del modelo
+│   ├── dataset/
+│   │   └── animals/
+│   │       ├── cats/              # 1000+ imágenes de gatos
+│   │       ├── dogs/              # 1000+ imágenes de perros
+│   │       └── otros/             # Otras imágenes
+│   ├── models/
+│   │   ├── mejor_modelo.keras     # Mejor modelo guardado
+│   │   └── modelo_final.keras     # Modelo final entrenado
+│   └── logs/
+│       └── fit/                   # Logs de TensorBoard
 │
-├── dataset/
-│   └── animals/
-│       ├── cats/               # 1000+ imágenes de gatos
-│       ├── dogs/               # 1000+ imágenes de perros
-│       └── otros/              # Otras imágenes
-│
-├── models/
-│   ├── mejor_modelo.keras
-│   └── modelo_final.keras
-│
-├── logs/
-│   └── fit/                    # TensorBoard logs
-│
-├── frontend/
-│   ├── index.html
-│   ├── app.js
-│   ├── style.css
-│   └── model/                  # Modelos para TensorFlow.js
-│       ├── model.json
-│       ├── group1-shard1of4.bin
-│       ├── group1-shard2of4.bin
-│       ├── group1-shard3of4.bin
-│       ├── group1-shard4of4.bin
-│       ├── mejor_modelo.keras
-│       ├── modelo_final.keras
-│       └── training_history.png
-│
-└── backend/
-    ├── dockerfile
-    ├── requirements.txt
-    ├── app/
-    │   ├── main.py
-    │   └── models/
-    │       ├── modelCNN.py
-    │       ├── train.py
-    │       └── test_model.py
-    ├── dataset/
-    │   └── animals/
-    │       ├── cats/
-    │       ├── dogs/
-    │       └── otros/
-    ├── models/
-    │   ├── mejor_modelo.keras
-    │   ├── modelo_final.keras
-    │   └── predicciones_test.png
-    └── logs/
-        └── fit/
+└── frontend/
+    ├── index.html                 # Página principal
+    └── src/
+        ├── app.js                 # Lógica de detección con TensorFlow.js
+        └── style.css              # Estilos de la aplicación
 ```
 
 ## 🚀 Inicio Rápido
@@ -97,15 +57,8 @@ Este proyecto implementa un clasificador de imágenes (perros y gatos) con:
 ### Backend (Entrenamiento)
 
 ```bash
-cd /workspace/.devcontainer/src
+cd /workspace/.devcontainer/backend/app/models
 python train.py
-```
-
-### Convertir Modelo a TensorFlow.js
-
-```bash
-cd /workspace/.devcontainer/src
-python convert_to_tfjs.py
 ```
 
 ### Frontend (Aplicación Web)
@@ -175,8 +128,7 @@ Sequential([
 
 ### Software
 - Python 3.12+
-- TensorFlow 2.x
-- TensorFlow.js (en navegador)
+- TensorFlow 2.x con soporte GPU
 
 ### Dependencias Python
 
