@@ -1,2 +1,6 @@
-matplotlib>=3.8.0
-tensorflowjs==4.22.0
+fastapi
+uvicorn
+python-multipart
+pillow
+numpy<2.0
+tensorflow-cpu==2.15.0
