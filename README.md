@@ -1,3 +1,6 @@
+<p align="center">
+  <img src="https://media4.giphy.com/media/v1.Y2lkPTc5MGI3NjExcGFlMnpxZGdtMnBtN3huZnByZnJ2N3F3aHlvMzRvZDIxOXp5bmo4cSZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/Dx0EMMSpUSwG2umEOO/giphy.gif" alt="AnimalVision Demo" width="500">
+</p>
 # 🐶🐱 Detector de Mascotas - CNN con TensorFlow y Web
 
 Aplicación completa para detectar si una imagen contiene un **perro o un gato** usando Deep Learning. Incluye backend con modelo entrenado en Python/TensorFlow y frontend web interactivo con TensorFlow.js.
