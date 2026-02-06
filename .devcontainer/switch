@@ -1,0 +1,98 @@
+#!/usr/bin/env bash
+
+# switch: selecciona la configuración de devcontainer activa.
+# Uso:
+#   ./switch <tipo>
+#   ./switch --list
+#   ./switch --help
+#
+# Tipos soportados:
+#   - gpu  -> usa devcontainer.json (o devcontainer.gpu si existe)
+#   - cpu  -> copia devcontainer.cpu a devcontainer.json
+#
+# Requiere reconstruir el contenedor tras el cambio.
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+DEVCONTAINER_DIR="$SCRIPT_DIR"
+DEST_FILE="$DEVCONTAINER_DIR/devcontainer.json"
+
+usage() {
+    cat <<'EOF'
+Uso: ./switch <tipo>
+     ./switch --list
+     ./switch --help
+
+Tipos disponibles:
+  gpu  -> usa devcontainer.json (o devcontainer.gpu si existe)
+  cpu  -> usa devcontainer.cpu
+
+Después del cambio, reconstruye el contenedor en VS Code.
+EOF
+}
+
+list_available() {
+    echo "Devcontainers disponibles:"
+    if [[ -f "$DEVCONTAINER_DIR/devcontainer.json" ]]; then
+        echo "  - gpu (devcontainer.json)"
+    fi
+    for file in "$DEVCONTAINER_DIR"/devcontainer.*; do
+        [[ -f "$file" ]] || continue
+        suffix="${file##*/devcontainer.}"
+        [[ "$suffix" == "json" ]] && continue
+        echo "  - $suffix (devcontainer.$suffix)"
+    done
+}
+
+die() {
+    echo "Error: $*" >&2
+    exit 1
+}
+
+if [[ ! -d "$DEVCONTAINER_DIR" ]]; then
+    die "Directorio .devcontainer no encontrado en $DEVCONTAINER_DIR"
+fi
+
+if [[ $# -eq 0 ]]; then
+    usage
+    list_available
+    exit 1
+fi
+
+case "${1,,}" in
+    -h|--help)
+        usage
+        exit 0
+        ;;
+    -l|--list)
+        list_available
+        exit 0
+        ;;
+esac
+
+TYPE="${1,,}"
+SOURCE_FILE=""
+
+case "$TYPE" in
+    gpu)
+        if [[ -f "$DEVCONTAINER_DIR/devcontainer.gpu" ]]; then
+            SOURCE_FILE="$DEVCONTAINER_DIR/devcontainer.gpu"
+        elif [[ -f "$DEVCONTAINER_DIR/devcontainer.json" ]]; then
+            SOURCE_FILE="$DEVCONTAINER_DIR/devcontainer.json"
+        else
+            die "No se encontró devcontainer.json ni devcontainer.gpu"
+        fi
+        ;;
+    *)
+        CANDIDATE="$DEVCONTAINER_DIR/devcontainer.$TYPE"
+        [[ -f "$CANDIDATE" ]] || die "Tipo '$TYPE' no encontrado en $CANDIDATE"
+        SOURCE_FILE="$CANDIDATE"
+        ;;
+esac
+
+cp "$SOURCE_FILE" "$DEST_FILE"
+echo "Devcontainer activo: '$TYPE'"
+echo "Fuente: $SOURCE_FILE"
+echo "Destino: $DEST_FILE"
+echo "Nota: reconstruye el contenedor en VS Code para aplicar cambios."

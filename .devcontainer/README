@@ -54,6 +54,19 @@ Este proyecto implementa un clasificador de imágenes (perros y gatos) con:
 
 ## 🚀 Inicio Rápido
 
+## 🔁 Elegir devcontainer (GPU o CPU)
+
+Este proyecto permite cambiar entre contenedor **GPU** y **CPU**. Usa el script `switch`:
+
+```bash
+cd /workspace/.devcontainer
+./switch gpu   # Activa configuración GPU
+./switch cpu   # Activa configuración CPU
+./switch --list
+```
+
+Después del cambio, **reconstruye el contenedor** en VS Code.
+
 ### Backend (Entrenamiento)
 
 ```bash
